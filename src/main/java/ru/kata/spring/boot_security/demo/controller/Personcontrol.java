@@ -11,35 +11,42 @@ import ru.kata.spring.boot_security.demo.servis.PersonServiceImpl;
 @RequestMapping("/admin")
 public class Personcontrol {
     private final PersonServiceImpl personservis;
+
     @Autowired
     public Personcontrol(PersonServiceImpl personservis) {
         this.personservis = personservis;
     }
+
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("persons", personservis.findAll());
-        return "person1";
+        return "list_of_users";
     }
+
     @GetMapping("/solo")
     public String index2(Model model, @RequestParam("id") Long id) {
         model.addAttribute("persons", personservis.findByUsername(id));
-        return "person2";
+        return "user_data";
     }
+
     @GetMapping("/add")
     public String addpers(Model model) {
         model.addAttribute("persons", new Person());
-        return "person3";
+        return "adding_new_user";
     }
+
     @PostMapping
     public String addpersons(@ModelAttribute("pers") Person person) {
         personservis.add(person);
         return "redirect:/admin";
     }
+
     @GetMapping("edit")
     public String edit(Model model, @RequestParam("id") Long id) {
         model.addAttribute("persons", personservis.findByUsername(id));
-        return "person4";
+        return "change_user";
     }
+
     @PostMapping("/update")
     public String update(
             @RequestParam("id") Long id, @ModelAttribute("pers") Person person) {
@@ -47,6 +54,7 @@ public class Personcontrol {
         personservis.add(person);
         return "redirect:/admin";
     }
+
     @PostMapping("/delet")
     public String delete(@RequestParam("id") Long id) {
         personservis.deleteById(id);

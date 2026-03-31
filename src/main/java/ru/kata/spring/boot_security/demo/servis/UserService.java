@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.ripository.UserRepository;
 
 @Service
-public class Userservis implements UserDetailsService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+
     @Autowired
-    public Userservis(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
+
