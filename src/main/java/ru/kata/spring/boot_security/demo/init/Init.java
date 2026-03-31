@@ -28,14 +28,14 @@ public class Init {
     @PostConstruct
     public void init() {
 
-        // создаём роли (если их нет)
+
         Role userRole = roleRepository.findByRole("ROLE_USER")
                 .orElseGet(() -> roleRepository.save(new Role("ROLE_USER")));
 
         Role adminRole = roleRepository.findByRole("ROLE_ADMIN")
                 .orElseGet(() -> roleRepository.save(new Role("ROLE_ADMIN")));
 
-        // создаём user
+
         if (userRepository.findByUsername("user").isEmpty()) {
             User user = new User();
             user.setUsername("user");
@@ -45,7 +45,7 @@ public class Init {
             userRepository.save(user);
         }
 
-        // создаём admin
+
         if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = new User();
             admin.setUsername("admin");
