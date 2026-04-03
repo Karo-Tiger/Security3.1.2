@@ -9,16 +9,13 @@ import ru.kata.spring.boot_security.demo.ripository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;
-
 @Component
 public class Init {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Init(UserRepository userRepository,
-                RoleRepository roleRepository,
+    public Init(UserRepository userRepository, RoleRepository roleRepository,
                 PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -27,14 +24,13 @@ public class Init {
 
     @PostConstruct
     public void init() {
+        Role userRole =
+                roleRepository.findByRole("ROLE_USER")
+                        .orElseGet(() -> roleRepository.save(new Role("ROLE_USER")));
 
-
-        Role userRole = roleRepository.findByRole("ROLE_USER")
-                .orElseGet(() -> roleRepository.save(new Role("ROLE_USER")));
-
-        Role adminRole = roleRepository.findByRole("ROLE_ADMIN")
-                .orElseGet(() -> roleRepository.save(new Role("ROLE_ADMIN")));
-
+        Role adminRole =
+                roleRepository.findByRole("ROLE_ADMIN")
+                        .orElseGet(() -> roleRepository.save(new Role("ROLE_ADMIN")));
 
         if (userRepository.findByUsername("user").isEmpty()) {
             User user = new User();
@@ -44,7 +40,6 @@ public class Init {
 
             userRepository.save(user);
         }
-
 
         if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = new User();

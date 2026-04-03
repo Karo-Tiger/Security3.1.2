@@ -15,21 +15,17 @@ import javax.persistence.JoinColumn;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
 @Table(name = "users")
 
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     private String username;
     private String password;
     private String email;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -68,7 +64,6 @@ public class User implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
@@ -114,12 +109,9 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", roles=" + roles +
-                '}';
+        return "User{"
+                + "id=" + id + ", username='" + username + '\'' + ", password='"
+                + password + '\'' + ", email='" + email + '\'' + ", roles=" + roles
+                + '}';
     }
 }

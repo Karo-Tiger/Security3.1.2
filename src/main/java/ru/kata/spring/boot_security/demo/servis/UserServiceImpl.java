@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.ripository.RoleRepository;
+import ru.kata.spring.boot_security.demo.model.User;;
 import ru.kata.spring.boot_security.demo.ripository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -24,14 +22,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(
+            UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
@@ -41,26 +41,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found"));
     }
 
     @Transactional
     @Override
-    public User createUser(User user, Set<Role> roles) {
+    public User createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        Set<Role> roles = user.getRoles();
         Set<Role> roleSet = new HashSet<>();
-        for (Role role : roles) {
-            if (role != null) {
-                roleSet.add(role);
+
+        if (roles != null) {
+            for (Role role : roles) {
+                if (role != null) {
+                    roleSet.add(role);
+                }
             }
         }
         user.setRoles(roleSet);
+
         return userRepository.save(user);
     }
-
     @Override
     public User getInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
     }
 
@@ -73,9 +80,11 @@ public class UserServiceImpl implements UserService {
     public void updateUser(Long id, User user) {
         String password = user.getPassword();
         if (password.trim().isEmpty()) {
-            password = userRepository.findById(id)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"))
-                    .getPassword();
+            password =
+                    userRepository.findById(id)
+                            .orElseThrow(
+                                    () -> new UsernameNotFoundException("User not found"))
+                            .getPassword();
 
             user.setPassword(password);
         } else {
@@ -88,5 +97,4 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
-
 }

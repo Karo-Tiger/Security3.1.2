@@ -5,15 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.servis.UserServiceImpl;
-
+import ru.kata.spring.boot_security.demo.servis.UserService;
 @Controller
 @RequestMapping("/admin")
 public class AdminControl {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public AdminControl (UserServiceImpl userService) {
+    public AdminControl(UserService userService) {
         this.userService = userService;
     }
 
@@ -37,7 +36,7 @@ public class AdminControl {
 
     @PostMapping
     public String addpersons(@ModelAttribute("user") User user) {
-        userService.save(userService.createUser(user, user.getRoles()));
+        userService.createUser(user);
         return "redirect:/admin";
     }
 
@@ -50,7 +49,7 @@ public class AdminControl {
     @PostMapping("/update")
     public String update(
             @RequestParam("id") Long id, @ModelAttribute("user") User user) {
-        userService.updateUser(id,user);
+        userService.updateUser(id, user);
         return "redirect:/admin";
     }
 
